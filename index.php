@@ -19,6 +19,8 @@
 
     <!-- Custom styles for this template -->
     <link href="css/styles.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
   </head>
 
   <body class="text-center">
@@ -37,67 +39,36 @@
         </p>
       </main>
       <?php else : ?>
+      <?php $questions = Question::find_questions_by_status($session->user_id, "(status = 0 OR status = 1)"); ?>
       <main role="main" class="cover h-100 p-3">
       <div class="d-flex p-3 row">
+      <?php foreach($questions as $question) : ?>
+      <?php if($question->add_by == $session->user_id && $question->status != 0) : ?>
+      <?php $friend = User::find_by_id($question->add_to); ?>
           <div class="col-sm-6">
-            <div class="card text-white bg-dark border-secondary mb-3" style="max-width: 20rem;">
-             <div class="card-header">@Marszal</div>
+              <div class="card card-hover text-white bg-dark border-secondary mb-3" data-clickable="true" data-href="question.php?id=<?php echo $question->id; ?>" style="max-width: 20rem;">
+             <div class="card-header">To <?php echo $friend->username; ?> <?php echo $question->status == 1 ? '<i class="fas fa-check-circle float-right"></i>' : ""; ?> </div>
              <div class="card-body">
-               <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                 card's content.</p>
+               <p class="card-text"><?php echo $question->question; ?></p>
              </div>
            </div>
-          </div>
+              </div>
+      <?php elseif($question->add_to == $session->user_id && $question->status != 1) : ?>
+      <?php $friend = User::find_by_id($question->add_by); ?>
           <div class="col-sm-6">
-            <div class="card text-white bg-dark border-secondary mb-3" style="max-width: 20rem;">
-             <div class="card-header">Header</div>
+            <div class="card card-hover text-white bg-dark border-secondary mb-3" data-clickable="true" data-href="answerquestion.php?id=<?php echo $question->id; ?>" style="max-width: 20rem;">
+             <div class="card-header">From <?php echo $friend->username; ?></div>
              <div class="card-body">
-               <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                 card's content.</p>
+               <p class="card-text"><?php echo $question->question; ?></p>
              </div>
            </div>
-          </div>
-          <div class="col-sm-6">
-            <div class="card text-white bg-dark border-secondary mb-3" style="max-width: 20rem;">
-             <div class="card-header">Header</div>
-             <div class="card-body">
-               <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                 card's content. </p>
-             </div>
-           </div>
-          </div>
-          <div class="col-sm-6">
-            <div class="card text-white bg-dark border-secondary mb-3" style="max-width: 20rem;">
-             <div class="card-header">Header</div>
-             <div class="card-body">
-               <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                 card's content.</p>
-             </div>
-           </div>
-          </div>
-          <div class="col-sm-6">
-            <div class="card text-white bg-dark border-secondary mb-3" style="max-width: 20rem;">
-             <div class="card-header">Header</div>
-             <div class="card-body">
-               <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                 card's content.</p>
-             </div>
-           </div>
-          </div>
-          <div class="col-sm-6">
-            <div class="card text-white bg-dark border-secondary mb-3" style="max-width: 20rem;">
-             <div class="card-header">Header</div>
-             <div class="card-body">
-               <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                 card's content.</p>
-             </div>
-           </div>
-          </div>
-    
-          </div>
-      </main>
-      
+              </div>
       <?php endif; ?>
+      <?php endforeach; ?>
+      </div>
+      </main>
+      <?php endif; ?>
+      
       
       
       

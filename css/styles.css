@@ -138,19 +138,13 @@ body {
  
 
 }
-.marg_left {
-    line-height: 16px;
-    margin-left: 12px;
+
+
+
+.card[data-clickable=true]{
+  cursor: pointer;
 }
 
-.left {
-    float: left;
-}
-
-.right {
-     float: right;
-}
-
-.marg_right{
-     margin-right:12px;
+.card-hover:hover {
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }

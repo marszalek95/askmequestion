@@ -32,7 +32,7 @@ class Dbclass
     {
         global $database;
         
-        $properties = $this->properties();
+        $properties = $this->clean_properties();
         
         $sql = "INSERT INTO " . static::$db_table . " (" . implode(",", array_keys($properties)) . ") 
                 VALUES ('" . implode("','", array_values($properties)) . "')";
@@ -47,6 +47,27 @@ class Dbclass
         {
             return false;
         }
+    }
+    
+    public function update()
+    {
+        global $database;
+        
+        $properties = $this->clean_properties();
+        $properties_pairs = array();
+        
+        $id = $database->escape_string($this->id);
+        
+        foreach ($properties as $key => $value)
+        {
+            $properties_pairs[] = "{$key}='{$value}'";
+        }
+        
+        $sql = "UPDATE " . static::$db_table . " SET " . implode(", ", $properties_pairs) . " WHERE id=$id";
+        
+        $database->query($sql);
+        
+        return (mysqli_affected_rows($database->connection) == 1) ? true : false;            
     }
     
     public static function find_this_query($sql)
@@ -95,6 +116,19 @@ class Dbclass
             }
         }
         return $properties;
+    }
+    
+    protected function clean_properties()
+    {
+        global $database;
+        
+        $clean_properties = array();
+        
+        foreach ($this->properties() as $key => $value)
+        {
+            $clean_properties[$key] = $database->escape_string($value);
+        }
+        return $clean_properties;
     }
     
     

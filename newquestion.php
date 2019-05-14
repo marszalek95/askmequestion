@@ -32,7 +32,7 @@ if(isset($_POST['submit']))
     $question->status = 0;
     
     $question->create();
-    redirect("sendquestions.php");
+    redirect("sentquestions.php");
 }
 
 ?>

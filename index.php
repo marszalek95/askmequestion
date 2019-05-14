@@ -29,46 +29,98 @@
     <?php include 'includes/navbar.php'; ?>
 
       
-      <?php if(!$session->is_signed_in()) : ?>
+        <?php if(!$session->is_signed_in()) : ?>
 
-      <main role="main" class="cover h-75">
-        <h1 class="cover-heading">Just ask question.</h1>
-        <p class="lead">On this site You can ask and answer questions. All you need to do is ask question, answer it and wait for reply. Your friend doesn't see the result of question till he answer it. This makes your answers do not affect each other.</p>
-        <p class="lead">
-          <a href="register.php" class="btn btn-lg btn-secondary">Sign up</a>
-        </p>
-      </main>
-      <?php else : ?>
-      <?php $questions = Question::find_questions_by_status($session->user_id, "(status = 0 OR status = 1)"); ?>
-      <main role="main" class="cover h-100 p-3">
-      <div class="d-flex p-3 row">
-      <?php foreach($questions as $question) : ?>
-      <?php if($question->add_by == $session->user_id && $question->status != 0) : ?>
-      <?php $friend = User::find_by_id($question->add_to); ?>
-          <div class="col-sm-6">
-              <div class="card card-hover text-white bg-dark border-secondary mb-3" data-clickable="true" data-href="question.php?id=<?php echo $question->id; ?>" style="max-width: 20rem;">
-             <div class="card-header">To <?php echo $friend->username; ?> <?php echo $question->status == 1 ? '<i class="fas fa-check-circle float-right"></i>' : ""; ?> </div>
-             <div class="card-body">
-               <p class="card-text"><?php echo $question->question; ?></p>
+        <main role="main" class="cover h-75">
+          <h1 class="cover-heading">Just ask question.</h1>
+          <p class="lead">On this site You can ask and answer questions. All you need to do is ask question, answer it and wait for reply. Your friend doesn't see the result of question till he answer it. This makes your answers do not affect each other.</p>
+          <p class="lead">
+            <a href="register.php" class="btn btn-lg btn-secondary">Sign up</a>
+          </p>
+        </main>
+        <?php else : ?>
+        <?php 
+
+          $page = !empty($_GET['page']) ? (int)$_GET['page'] : 1;
+
+          $items_per_page = 2;
+
+          $items_total_count = Question::count_questions_by_status($session->user_id, "(status = 0 OR status = 1)");
+
+          $paginate = new Pagination($page, $items_per_page, $items_total_count);
+
+          $questions = Question::find_questions_by_status($session->user_id, "(status = 0 OR status = 1)", $items_per_page, $paginate->offset()); 
+          
+          
+
+        ?>
+        <main role="main" class="cover h-100 p-3">
+        <div class="d-flex p-3 row">
+        <?php foreach($questions as $question) : ?>
+        <?php if($question->add_by == $session->user_id && $question->status != 0) : ?>
+        <?php $friend = User::find_by_id($question->add_to); ?>
+            <div class="col-sm-6">
+                <div class="card card-hover text-white bg-dark border-secondary mb-3" data-clickable="true" data-href="question.php?id=<?php echo $question->id; ?>" style="max-width: 20rem;">
+               <div class="card-header">To <?php echo $friend->username; ?> <?php echo $question->status == 1 ? '<i class="fas fa-check-circle float-right"></i>' : ""; ?> </div>
+               <div class="card-body">
+                 <p class="card-text"><?php echo $question->question; ?></p>
+               </div>
              </div>
-           </div>
-              </div>
-      <?php elseif($question->add_to == $session->user_id && $question->status != 1) : ?>
-      <?php $friend = User::find_by_id($question->add_by); ?>
-          <div class="col-sm-6">
-            <div class="card card-hover text-white bg-dark border-secondary mb-3" data-clickable="true" data-href="answerquestion.php?id=<?php echo $question->id; ?>" style="max-width: 20rem;">
-             <div class="card-header">From <?php echo $friend->username; ?></div>
-             <div class="card-body">
-               <p class="card-text"><?php echo $question->question; ?></p>
+                </div>
+        <?php elseif($question->add_to == $session->user_id && $question->status != 1) : ?>
+        <?php $friend = User::find_by_id($question->add_by); ?>
+            <div class="col-sm-6">
+              <div class="card card-hover text-white bg-dark border-secondary mb-3" data-clickable="true" data-href="answerquestion.php?id=<?php echo $question->id; ?>" style="max-width: 20rem;">
+               <div class="card-header">From <?php echo $friend->username; ?></div>
+               <div class="card-body">
+                 <p class="card-text"><?php echo $question->question; ?></p>
+               </div>
              </div>
-           </div>
-              </div>
-      <?php endif; ?>
-      <?php endforeach; ?>
-      </div>
-      </main>
-      <?php endif; ?>
+                </div>
+        <?php endif; ?>
+        <?php endforeach; ?>
+        </div>
+        </main>
       
+        <div class="row col-md-12" align="center">
+                
+                <ul class="pagination">
+                    
+                    <?php 
+                    
+                    if($paginate->page_total() > 1)
+                    {
+                        if($paginate->has_previous())
+                        {
+                            echo "<li class='previous'><a href='index.php?page={$paginate->previous()}'>Previous</a></li>";
+                        }
+                        
+                        for ($i = 1; $i <= $paginate->page_total(); $i++)
+                        {
+                            if($i == $paginate->current_page)
+                            {
+                                echo "<li class='active'><a href='index.php?page={$i}'>{$i}</a></li>";
+                            }
+                            else
+                            {
+                                echo "<li><a href='index.php?page={$i}'>{$i}</a></li>";
+                            }
+                        }
+                        
+                        if($paginate->has_next())
+                        {
+                            echo "<li class='next'><a href='index.php?page={$paginate->next()}'>Next</a></li>";
+                        }
+                                     
+                    }
+                    
+                    ?>
+                    
+                </ul>
+                
+            </div>
+        <?php endif; ?>
+
       
       
       

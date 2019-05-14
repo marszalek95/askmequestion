@@ -3,7 +3,7 @@
 
 <?php
 
-$friends_id = Friends::find_all_user_friends(11);
+$friends_id = Friends::find_all_user_friends($session->user_id);
 
 ?>
 
@@ -36,11 +36,10 @@ $friends_id = Friends::find_all_user_friends(11);
       
 
         <main role="main" class="cover h-100">
-            <div class="col-sm-6 mx-auto">
+            <div class="col-sm-6 mx-auto p-3">
                 <center>
                     <a href="friends.php" class="btn btn-sm btn-secondary">All friends</a>
                     <a href="#" class="btn btn-sm btn-secondary">Find friends</a>
-                    <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search" aria-label="Search">
                 </center>
             </div>
             <div class="d-flex p-3 row">
@@ -70,7 +69,7 @@ $friends_id = Friends::find_all_user_friends(11);
                             <li class="list-group-item list-group-item-dark">
                              <a><?php echo $friend->username; ?></a>
                              <span class="float-right">
-                                <a href="register.php" class="btn btn-sm btn-outline-light">Ask</a>
+                                 <a href="newquestion.php?id=<?php echo $friend_id->id; ?>" class="btn btn-sm btn-outline-light">Ask</a>
                                 <?php if($status) : ?>
                                 <a href="action/delete_bestfriend.php?id=<?php echo $friend_id->id; ?>""><i class="fas fa-heart fa-lg"></i></a>
                                 <?php else : ?>

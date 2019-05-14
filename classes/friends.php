@@ -47,7 +47,7 @@ class Friends extends Dbclass
     public static function find_all_user_friends($user_id)
     {
         
-        $sql = "SELECT * FROM " . static::$db_table . " WHERE (user_one_id = {$user_id} OR user_two_id = {$user_id}) AND (status_user_one = 1 OR 4) OR (status_user_two = 1 OR 4) ORDER BY status_user_one = 4 OR status_user_two = 4 DESC";
+        $sql = "SELECT * FROM " . static::$db_table . " WHERE (user_one_id = {$user_id} OR user_two_id = {$user_id}) AND ((status_user_one = 1 OR status_user_one = 4) OR (status_user_two = 1 OR status_user_two = 4)) ORDER BY status_user_one = 4 OR status_user_two = 4 DESC";
         
         return static::find_this_query($sql);
     }

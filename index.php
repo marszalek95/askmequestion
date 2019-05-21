@@ -45,11 +45,11 @@
 
           $items_per_page = 2;
 
-          $items_total_count = Question::count_questions_by_status($session->user_id, "(status = 0 OR status = 1)");
+          $items_total_count = Question::count_new_questions($session->user_id);
 
           $paginate = new Pagination($page, $items_per_page, $items_total_count);
 
-          $questions = Question::find_questions_by_status($session->user_id, "(status = 0 OR status = 1)", $items_per_page, $paginate->offset()); 
+          $questions = Question::find_new_questions($session->user_id,  $items_per_page, $paginate->offset()); 
           
           
 
@@ -82,9 +82,9 @@
         </div>
         </main>
       
-        <div class="row col-md-12" align="center">
-                
-                <ul class="pagination">
+        
+            <div class="d-flex justify-content-center">
+                <ul class="pagination bg-dark">
                     
                     <?php 
                     
@@ -92,24 +92,24 @@
                     {
                         if($paginate->has_previous())
                         {
-                            echo "<li class='previous'><a href='index.php?page={$paginate->previous()}'>Previous</a></li>";
+                            echo "<li class='page-item'><a class='page-link' href='index.php?page={$paginate->previous()}'>Previous</a></li>";
                         }
                         
                         for ($i = 1; $i <= $paginate->page_total(); $i++)
                         {
                             if($i == $paginate->current_page)
                             {
-                                echo "<li class='active'><a href='index.php?page={$i}'>{$i}</a></li>";
+                                echo "<li class='page-item active'><a class='page-link' href='index.php?page={$i}'>{$i}</a></li>";
                             }
                             else
                             {
-                                echo "<li><a href='index.php?page={$i}'>{$i}</a></li>";
+                                echo "<li class='page-item'><a class='page-link' class='page-link' href='index.php?page={$i}'>{$i}</a></li>";
                             }
                         }
                         
                         if($paginate->has_next())
                         {
-                            echo "<li class='next'><a href='index.php?page={$paginate->next()}'>Next</a></li>";
+                            echo "<li class='page-item'><a class='page-link' href='index.php?page={$paginate->next()}'>Next</a></li>";
                         }
                                      
                     }
@@ -117,8 +117,9 @@
                     ?>
                     
                 </ul>
-                
             </div>
+                
+        
         <?php endif; ?>
 
       

@@ -29,7 +29,21 @@
 
       
       
-      <?php $questions = Question::find_questions_by_status($session->user_id, "(status = 1 OR status = 2)"); ?>
+      <?php 
+
+          $page = !empty($_GET['page']) ? (int)$_GET['page'] : 1;
+
+          $items_per_page = 2;
+
+          $items_total_count = Question::count_seen_questions($session->user_id);
+
+          $paginate = new Pagination($page, $items_per_page, $items_total_count);
+
+          $questions = Question::find_seen_questions($session->user_id,  $items_per_page, $paginate->offset()); 
+          
+          
+
+        ?>
       <main role="main" class="cover h-100 p-3">
       <div class="d-flex p-3 row">
       <?php foreach($questions as $question) : ?>
@@ -59,7 +73,41 @@
       </main>
     
       
-      
+      <div class="d-flex justify-content-center">
+                <ul class="pagination bg-dark">
+                    
+                    <?php 
+                    
+                    if($paginate->page_total() > 1)
+                    {
+                        if($paginate->has_previous())
+                        {
+                            echo "<li class='page-item'><a class='page-link' href='seenquestions.php?page={$paginate->previous()}'>Previous</a></li>";
+                        }
+                        
+                        for ($i = 1; $i <= $paginate->page_total(); $i++)
+                        {
+                            if($i == $paginate->current_page)
+                            {
+                                echo "<li class='page-item active'><a class='page-link' href='seenquestions.php?page={$i}'>{$i}</a></li>";
+                            }
+                            else
+                            {
+                                echo "<li class='page-item'><a class='page-link' class='page-link' href='seenquestions.php?page={$i}'>{$i}</a></li>";
+                            }
+                        }
+                        
+                        if($paginate->has_next())
+                        {
+                            echo "<li class='page-item'><a class='page-link' href='seenquestions.php?page={$paginate->next()}'>Next</a></li>";
+                        }
+                                     
+                    }
+                    
+                    ?>
+                    
+                </ul>
+            </div>
       
       
       <footer class="mastfoot mt-auto">

@@ -44,12 +44,21 @@ class Friends extends Dbclass
         $database->query($sql); 
     }
     
-    public static function find_all_user_friends($user_id)
+    public static function find_all_user_friends($user_id, $items_per_page, $offset)
     {
         
-        $sql = "SELECT * FROM " . static::$db_table . " WHERE (user_one_id = {$user_id} OR user_two_id = {$user_id}) AND ((status_user_one = 1 OR status_user_one = 4) OR (status_user_two = 1 OR status_user_two = 4)) ORDER BY status_user_one = 4 OR status_user_two = 4 DESC";
+        $sql = "SELECT * FROM " . static::$db_table . " WHERE (user_one_id = {$user_id} AND (status_user_one = 1 OR status_user_one = 4)) OR (user_two_id = {$user_id} AND (status_user_one = 1 OR status_user_one = 4) OR (status_user_two = 1 OR status_user_two = 4)) ORDER BY status_user_one = 4 OR status_user_two = 4 DESC LIMIT {$items_per_page} OFFSET {$offset}";
         
         return static::find_this_query($sql);
+    }
+    
+    public static function count_all_user_friends($user_id)
+    {
+        global $database;
+        
+        $sql = "SELECT * FROM " . static::$db_table . " WHERE (user_one_id = {$user_id} AND (status_user_one = 1 OR status_user_one = 4)) OR (user_two_id = {$user_id} AND (status_user_one = 1 OR status_user_one = 4) OR (status_user_two = 1 OR status_user_two = 4))";
+        $result = $database->query($sql);
+        return mysqli_num_rows($result);
     }
     
     

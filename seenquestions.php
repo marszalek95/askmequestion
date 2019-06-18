@@ -33,7 +33,7 @@
 
           $page = !empty($_GET['page']) ? (int)$_GET['page'] : 1;
 
-          $items_per_page = 2;
+          $items_per_page = 1;
 
           $items_total_count = Question::count_seen_questions($session->user_id);
 
@@ -77,6 +77,54 @@
                 <ul class="pagination bg-dark">
                     
                     <?php 
+                    $pagination_lenght = 7;
+                    $pagination_delay = 3;
+                    $pagination_total = $paginate->page_total();
+                    
+//                    if($page <= $pagination_delay)
+//                    {
+//                        $pagination_min = 1;
+//                    }
+//                    else
+//                    {
+//                        $pagination_min = $page - $pagination_delay;
+//                    }
+//                    
+//                    if($pagination_total <= $pagination_lenght)
+//                    {
+//                        $pagination_max = $pagination_total;
+//                    }
+//                    else
+//                    {
+//                        $pagination_max_count = $page + $pagination_delay;
+//                    }
+//                    
+                    
+                    if($pagination_total <= $pagination_lenght)
+                    {
+                        $pagination_min = 1;
+                        $pagination_max = $pagination_total;
+                    }
+                    else
+                    {
+                        $pagination_min = 1;
+                        $pagination_max = $pagination_lenght;
+                    }
+                    
+                    if(($page + $pagination_delay) >= $pagination_total)
+                    {
+                        $pagination_min = $pagination_total - $pagination_lenght;
+                        $pagination_max = $pagination_total;
+                    }
+                    elseif($page > $pagination_delay)
+                    {
+                        $pagination_min = $page - 3;
+                        $pagination_max = $page + 3;
+                    }
+                    
+                    
+                    
+                    
                     
                     if($paginate->page_total() > 1)
                     {
@@ -85,7 +133,7 @@
                             echo "<li class='page-item'><a class='page-link' href='seenquestions.php?page={$paginate->previous()}'>Previous</a></li>";
                         }
                         
-                        for ($i = 1; $i <= $paginate->page_total(); $i++)
+                        for ($i = $pagination_min; $i <= $pagination_max; $i++)
                         {
                             if($i == $paginate->current_page)
                             {

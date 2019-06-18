@@ -55,7 +55,7 @@ class Question extends Dbclass
     {
         global $database;
         
-        $sql = "SELECT * FROM " . static::$db_table . " WHERE (add_by={$user_id} AND status=1) OR (add_to={$user_id} AND status=0)";
+        $sql = "SELECT * FROM " . static::$db_table . " WHERE (add_by={$user_id} AND status=2) OR (add_to={$user_id} AND status=1)";
         $result = $database->query($sql);
         return mysqli_num_rows($result);
     }

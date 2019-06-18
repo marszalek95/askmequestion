@@ -3,7 +3,15 @@
 
 <?php
 
-$friends_id = Friends::find_all_user_friends($session->user_id);
+        $page = !empty($_GET['page']) ? (int)$_GET['page'] : 1;
+
+        $items_per_page = 2;
+
+        $items_total_count = Friends::count_all_user_friends($session->user_id);
+
+        $paginate = new Pagination($page, $items_per_page, $items_total_count);
+
+        $friends_id = Friends::find_all_user_friends($session->user_id,  $items_per_page, $paginate->offset()); 
 
 ?>
 
@@ -92,7 +100,41 @@ $friends_id = Friends::find_all_user_friends($session->user_id);
             </div>
         </main>
 
-      
+      <div class="d-flex justify-content-center">
+                <ul class="pagination bg-dark">
+                    
+                    <?php 
+                    
+                    if($paginate->page_total() > 1)
+                    {
+                        if($paginate->has_previous())
+                        {
+                            echo "<li class='page-item'><a class='page-link' href='friends.php?page={$paginate->previous()}'>Previous</a></li>";
+                        }
+                        
+                        for ($i = 1; $i <= $paginate->page_total(); $i++)
+                        {
+                            if($i == $paginate->current_page)
+                            {
+                                echo "<li class='page-item active'><a class='page-link' href='friends.php?page={$i}'>{$i}</a></li>";
+                            }
+                            else
+                            {
+                                echo "<li class='page-item'><a class='page-link' class='page-link' href='friends.php?page={$i}'>{$i}</a></li>";
+                            }
+                        }
+                        
+                        if($paginate->has_next())
+                        {
+                            echo "<li class='page-item'><a class='page-link' href='friends.php?page={$paginate->next()}'>Next</a></li>";
+                        }
+                                     
+                    }
+                    
+                    ?>
+                    
+                </ul>
+            </div>
       
       
       <footer class="mastfoot">

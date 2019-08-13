@@ -27,25 +27,28 @@
 
     <?php include 'includes/navbar.php'; ?>
 
+ 
+    <?php 
+
+        $page = !empty($_GET['page']) ? (int)$_GET['page'] : 1;
+
+        $items_per_page = 2;
+
+        $items_total_count = Question::count_sent_questions($session->user_id);
+
+        $paginate = new Pagination($page, $items_per_page, $items_total_count);
+
+        $questions = Question::find_sent_questions($session->user_id,  $items_per_page, $paginate->offset()); 
+
+
+
+      ?>
       
-      
-      <?php 
-
-          $page = !empty($_GET['page']) ? (int)$_GET['page'] : 1;
-
-          $items_per_page = 2;
-
-          $items_total_count = Question::count_sent_questions($session->user_id);
-
-          $paginate = new Pagination($page, $items_per_page, $items_total_count);
-
-          $questions = Question::find_sent_questions($session->user_id,  $items_per_page, $paginate->offset()); 
-          
-          
-
-        ?>
       <main role="main" class="cover h-100 p-3">
       <div class="d-flex p-3 row">
+          
+      <?php echo $items_total_count == 0 ?  "You don't have sent questions!" : false ; ?>     
+          
       <?php foreach($questions as $question) : ?>
       <?php $friend = User::find_by_id($question->add_to); ?>
           <div class="col-sm-6">
@@ -65,6 +68,32 @@
                 <ul class="pagination bg-dark">
                     
                     <?php 
+                    $pagination_lenght = 7;
+                    $pagination_delay = 3;
+                    $pagination_total = $paginate->page_total();
+                    
+              
+                    if($pagination_total <= $pagination_lenght)
+                    {
+                        $pagination_min = 1;
+                        $pagination_max = $pagination_total;
+                    }
+                    elseif($page <= $pagination_delay)
+                    {
+                        $pagination_min = 1;
+                        $pagination_max = $pagination_lenght;
+                    }
+                    elseif($page <= ($pagination_total - $pagination_delay))
+                    {
+                        $pagination_min = $page - $pagination_delay;
+                        $pagination_max = $page + $pagination_delay;
+                    }
+                    elseif($page >= ($pagination_total - $pagination_delay))
+                    {
+                        $pagination_min = $pagination_total - (2 * $pagination_delay);
+                        $pagination_max = $pagination_total;
+                    }
+                             
                     
                     if($paginate->page_total() > 1)
                     {

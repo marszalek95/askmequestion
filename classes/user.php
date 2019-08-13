@@ -49,4 +49,20 @@ class User extends Dbclass
         }
     }
     
+    public static function find_users_by_name($user_name, $items_per_page, $offset)
+    {  
+        $sql = "SELECT * FROM " . static::$db_table . " WHERE username LIKE '%{$user_name}%' LIMIT {$items_per_page} OFFSET {$offset}";
+        
+        return static::find_this_query($sql);   
+    }
+    
+    public static function count_users_by_name($user_name)
+    {
+        global $database;
+        
+        $sql = "SELECT * FROM " . static::$db_table . " WHERE username LIKE '%{$user_name}%'";
+        $result = $database->query($sql);
+        return mysqli_num_rows($result);     
+    }
+    
 }

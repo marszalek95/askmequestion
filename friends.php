@@ -11,8 +11,8 @@
 
         $paginate = new Pagination($page, $items_per_page, $items_total_count);
 
-        $friends_id = Friends::find_all_user_friends($session->user_id,  $items_per_page, $paginate->offset()); 
-
+        $friends_id = Friends::find_all_user_friends_pagination($session->user_id,  $items_per_page, $paginate->offset()); 
+        
 ?>
 
 
@@ -43,35 +43,44 @@
     <?php include 'includes/navbar.php'; ?>
       
 
-        <main role="main" class="cover h-100">
-            <div class="col-sm-6 mx-auto p-3">
-                <center>
-                    <a href="friends.php" class="btn btn-sm btn-secondary">All friends</a>
-                    <a href="#" class="btn btn-sm btn-secondary">Find friends</a>
-                </center>
+      
+            <div class="p-4 col-sm">
+                <div class="float-right">
+                    <form action="searchfriends.php">
+                        <div class="input-group">
+                            <input class="form-control form-control-sm mr-sm-2 bg-dark text-white" type="text" placeholder="Search" name="query">
+                            <span class="input-group-btn">
+                                <button class="btn btn-sm" type="submit" ><i class="fas fa-search fa-lg"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
             </div>
+      
+      
+        <main role="main" class="cover h-100">
             <div class="d-flex p-3 row">
                 <div class="container">
                     <div class="list-group flex-row flex-wrap">
                         
                         
-    
+        <?php echo $items_total_count == 0 ?  "You don't have any friends. Go invite someone!" : false ; ?>               
       
-          <?php foreach($friends_id as $friend_id) : ?>
-          <?php 
-          
-          if($friend_id->user_one_id == $session->user_id)
-          {
-              $friend = User::find_by_id($friend_id->user_two_id);
-              $status = $friend_id->status_user_one == 4 ? true : false;
-          }
-          else
-          {
-              $friend = User::find_by_id($friend_id->user_one_id);
-              $status = $friend_id->status_user_two == 4 ? true : false;
-          }
-          
-          ?>
+        <?php foreach($friends_id as $friend_id) : ?>
+        <?php 
+
+        if($friend_id->user_one_id == $session->user_id)
+        {
+            $friend = User::find_by_id($friend_id->user_two_id);
+            $status = $friend_id->status_user_two == 4 ? true : false;
+        }
+        else
+        {
+            $friend = User::find_by_id($friend_id->user_one_id);
+            $status = $friend_id->status_user_one == 4 ? true : false;
+        }
+
+        ?>
         
                         <div class="col-md-6 py-1 mx-auto">
                             <li class="list-group-item list-group-item-dark">
@@ -104,6 +113,32 @@
                 <ul class="pagination bg-dark">
                     
                     <?php 
+                    $pagination_lenght = 7;
+                    $pagination_delay = 3;
+                    $pagination_total = $paginate->page_total();
+                    
+              
+                    if($pagination_total <= $pagination_lenght)
+                    {
+                        $pagination_min = 1;
+                        $pagination_max = $pagination_total;
+                    }
+                    elseif($page <= $pagination_delay)
+                    {
+                        $pagination_min = 1;
+                        $pagination_max = $pagination_lenght;
+                    }
+                    elseif($page <= ($pagination_total - $pagination_delay))
+                    {
+                        $pagination_min = $page - $pagination_delay;
+                        $pagination_max = $page + $pagination_delay;
+                    }
+                    elseif($page >= ($pagination_total - $pagination_delay))
+                    {
+                        $pagination_min = $pagination_total - (2 * $pagination_delay);
+                        $pagination_max = $pagination_total;
+                    }
+                             
                     
                     if($paginate->page_total() > 1)
                     {

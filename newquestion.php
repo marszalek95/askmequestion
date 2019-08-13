@@ -61,9 +61,8 @@ if(isset($_POST['submit']))
       
 
     <?php include 'includes/navbar.php'; ?>
-
       
-      
+     
       <main role="main" class="cover h-100 p-3">
           <form class="form" method="post" autocomplete="off">
               <div class="form-group">
@@ -78,8 +77,7 @@ if(isset($_POST['submit']))
       
 
       
-      
-      
+     
       <footer class="mastfoot mt-auto">
         <div class="inner">
           <p>Copyright &copy; Adam Marszalek 2019</p>

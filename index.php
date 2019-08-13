@@ -56,6 +56,9 @@
         ?>
         <main role="main" class="cover h-100 p-3">
         <div class="d-flex p-3 row">
+            
+        <?php echo $items_total_count == 0 ?  "You don't have new questions!" : false ; ?> 
+            
         <?php foreach($questions as $question) : ?>
         <?php if($question->add_by == $session->user_id && $question->status != 0) : ?>
         <?php $friend = User::find_by_id($question->add_to); ?>

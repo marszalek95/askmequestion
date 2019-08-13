@@ -44,10 +44,16 @@ class Friends extends Dbclass
         $database->query($sql); 
     }
     
-    public static function find_all_user_friends($user_id, $items_per_page, $offset)
-    {
+    public static function find_all_user_friends_pagination($user_id, $items_per_page, $offset)
+    {     
+        $sql = "SELECT * FROM " . static::$db_table . " WHERE (user_one_id = {$user_id} AND (status_user_two = 1 OR status_user_two = 4)) OR (user_two_id = {$user_id} AND (status_user_one = 1 OR status_user_one = 4)) ORDER BY status_user_one = 4 OR status_user_two = 4 DESC LIMIT {$items_per_page} OFFSET {$offset}";
         
-        $sql = "SELECT * FROM " . static::$db_table . " WHERE (user_one_id = {$user_id} AND (status_user_one = 1 OR status_user_one = 4)) OR (user_two_id = {$user_id} AND (status_user_one = 1 OR status_user_one = 4) OR (status_user_two = 1 OR status_user_two = 4)) ORDER BY status_user_one = 4 OR status_user_two = 4 DESC LIMIT {$items_per_page} OFFSET {$offset}";
+        return static::find_this_query($sql);
+    }
+    
+    public static function find_all_user_friends($user_id)
+    {     
+        $sql = "SELECT * FROM " . static::$db_table . " WHERE (user_one_id = {$user_id} AND (status_user_two = 1 OR status_user_two = 4)) OR (user_two_id = {$user_id} AND (status_user_one = 1 OR status_user_one = 4))";
         
         return static::find_this_query($sql);
     }
@@ -56,11 +62,37 @@ class Friends extends Dbclass
     {
         global $database;
         
-        $sql = "SELECT * FROM " . static::$db_table . " WHERE (user_one_id = {$user_id} AND (status_user_one = 1 OR status_user_one = 4)) OR (user_two_id = {$user_id} AND (status_user_one = 1 OR status_user_one = 4) OR (status_user_two = 1 OR status_user_two = 4))";
+        $sql = "SELECT * FROM " . static::$db_table . " WHERE (user_one_id = {$user_id} AND (status_user_two = 1 OR status_user_two = 4)) OR (user_two_id = {$user_id} AND (status_user_one = 1 OR status_user_one = 4))";
         $result = $database->query($sql);
         return mysqli_num_rows($result);
     }
     
+    public static function check_friends_realtion($first_id, $second_id, $user_id)
+    {
+        $sql = "SELECT * FROM " . static::$db_table . " WHERE (user_one_id = {$first_id} AND user_two_id = {$second_id}) OR (user_one_id = {$second_id} AND user_two_id = {$first_id})";
+        
+        $result_obj_array = static::find_this_query($sql);
+        $result_obj = array_shift($result_obj_array);
+        
+        if($result_obj->user_one_id == $user_id)
+        {
+            return $result_obj->status_user_two == 4 ? true : false;
+        }
+        elseif($result_obj->user_two_id == $user_id)
+        {
+            return $result_obj->status_user_one == 4 ? true : false;
+        }
+    }
+    
+    public static function check_relation_id($first_id, $second_id)
+    {
+        $sql = "SELECT * FROM " . static::$db_table . " WHERE (user_one_id = {$first_id} AND user_two_id = {$second_id}) OR (user_one_id = {$second_id} AND user_two_id = {$first_id})";
+        
+        $result_obj_array = static::find_this_query($sql);
+        $result_obj = array_shift($result_obj_array);
+        
+        return $result_obj->id;
+    }
     
     
 }

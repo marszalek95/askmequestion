@@ -60,6 +60,21 @@ class Question extends Dbclass
         return mysqli_num_rows($result);
     }
     
+    public static function find_friend_questions($friend_id, $user_id, $items_per_page, $offset)
+    {
+        return static::find_this_query("SELECT * FROM " . static::$db_table . " WHERE (add_by={$friend_id} AND add_to={$user_id}) OR (add_to={$friend_id} AND add_by={$user_id}) LIMIT {$items_per_page} OFFSET {$offset}");
+    }
+    
+    public static function count_friend_questions($friend_id, $user_id)
+    {
+        global $database;
+        
+        $sql = "SELECT * FROM " . static::$db_table . " WHERE (add_by={$friend_id} AND add_to={$user_id}) OR (add_to={$friend_id} AND add_by={$user_id})";
+        $result = $database->query($sql);
+        return mysqli_num_rows($result);
+    }
+
+
     public function update_status($status)
     {
         global $database;

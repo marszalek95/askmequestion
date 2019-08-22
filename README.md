@@ -5,7 +5,7 @@ On this site You can ask and answer questions. All you need to do is ask questio
 --------------------------------------------------------------------
 
 Live demo: http://217.173.11.119/askmequestion/index.php
-
+Pass: login: John password: password
 --------------------------------------------------------------------
 
 

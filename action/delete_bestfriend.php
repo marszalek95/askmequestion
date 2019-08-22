@@ -9,17 +9,17 @@ $friend = Friends::find_by_id($id);
 
 if($friend->user_one_id == $session->user_id)
 {
-    if($friend->status_user_two == 4)
+    if($friend->status_user_two == 3)
     {
-        $friend->update_status('status_user_two', 1);
+        $friend->update_status('status_user_two', 2);
         redirect($_SERVER['HTTP_REFERER']);
     }
 }
 elseif($friend->user_two_id == $session->user_id)
 {
-    if($friend->status_user_one == 4)
+    if($friend->status_user_one == 3)
     {
-        $friend->update_status('status_user_one', 1);
+        $friend->update_status('status_user_one', 2);
         redirect($_SERVER['HTTP_REFERER']);
     }
 }

@@ -13,6 +13,8 @@
 
         $friends_id = Friends::find_all_user_friends_pagination($session->user_id,  $items_per_page, $paginate->offset()); 
         
+        $friends_request = Friends::count_friends_request($session->user_id);
+        
 ?>
 
 
@@ -46,8 +48,12 @@
       
             <div class="p-4 col-sm">
                 <div class="float-right">
+                    
                     <form action="searchfriends.php">
                         <div class="input-group">
+                            <?php if(!empty($friends_request)) : ?>
+                            <a href="friendsrequest.php"><?php echo $friends_request ?> friends request &nbsp;</a>
+                            <?php endif; ?>
                             <input class="form-control form-control-sm mr-sm-2 bg-dark text-white" type="text" placeholder="Search" name="query">
                             <span class="input-group-btn">
                                 <button class="btn btn-sm" type="submit" ><i class="fas fa-search fa-lg"></i></button>
@@ -72,12 +78,12 @@
         if($friend_id->user_one_id == $session->user_id)
         {
             $friend = User::find_by_id($friend_id->user_two_id);
-            $status = $friend_id->status_user_two == 4 ? true : false;
+            $status = $friend_id->status_user_two == 3 ? true : false;
         }
         else
         {
             $friend = User::find_by_id($friend_id->user_one_id);
-            $status = $friend_id->status_user_one == 4 ? true : false;
+            $status = $friend_id->status_user_one == 3 ? true : false;
         }
 
         ?>
@@ -94,8 +100,8 @@
                                 <?php endif; ?>
                                 <a class="" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><i class="fas fa-list fa-lg"></i></a>
                                   <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                    <a class="dropdown-item" href="#">All questions</a>
-                                    <a class="dropdown-item" href="logout.php">Remove</a>
+                                      <a class="dropdown-item" href="friendquestions.php?id=<?php echo $friend->id; ?>">All questions</a>
+                                    <a class="dropdown-item" href="action/delete_friend.php?id=<?php echo $friend_id->id; ?>">Remove</a>
                                   </div>
                              </span>
                             </li>                              

@@ -9,11 +9,11 @@ if(!$relation = Friends::find_by_id($id))
     redirect('index.php');
 }
 
-if($relation->user_one_id == $session->user_id && $relation->status_user_one == (1 || 4))
+if($relation->user_one_id == $session->user_id && $relation->status_user_one == (2 || 3))
 {
     $friend = User::find_by_id($relation->user_two_id);
 }
-elseif($relation->user_two_id == $session->user_id && $relation->status_user_two == (1 || 4))
+elseif($relation->user_two_id == $session->user_id && $relation->status_user_two == (2 || 3))
 {
     $friend = User::find_by_id($relation->user_one_id);
 }
@@ -78,7 +78,7 @@ if(isset($_POST['submit']))
 
       
      
-      <footer class="mastfoot mt-auto">
+       <footer class="mastfoot mt-auto">
         <div class="inner">
           <p>Copyright &copy; Adam Marszalek 2019</p>
         </div>

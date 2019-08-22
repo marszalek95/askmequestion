@@ -29,8 +29,8 @@ class Friends extends Dbclass
     {
         $this->user_one_id = $user_one_id;
         $this->user_two_id = $user_two_id;
-        $this->status = 0;
-        $this->action_user = $user_one_id;
+        $this->status_user_one = 1;
+        $this->status_user_two = 0;
         
         $this->create(); 
     }
@@ -46,14 +46,14 @@ class Friends extends Dbclass
     
     public static function find_all_user_friends_pagination($user_id, $items_per_page, $offset)
     {     
-        $sql = "SELECT * FROM " . static::$db_table . " WHERE (user_one_id = {$user_id} AND (status_user_two = 1 OR status_user_two = 4)) OR (user_two_id = {$user_id} AND (status_user_one = 1 OR status_user_one = 4)) ORDER BY status_user_one = 4 OR status_user_two = 4 DESC LIMIT {$items_per_page} OFFSET {$offset}";
+        $sql = "SELECT * FROM " . static::$db_table . " WHERE (user_one_id = {$user_id} AND (status_user_two = 2 OR status_user_two = 3)) OR (user_two_id = {$user_id} AND (status_user_one = 2 OR status_user_one = 3)) ORDER BY status_user_one = 3 OR status_user_two = 3 DESC LIMIT {$items_per_page} OFFSET {$offset}";
         
         return static::find_this_query($sql);
     }
     
     public static function find_all_user_friends($user_id)
     {     
-        $sql = "SELECT * FROM " . static::$db_table . " WHERE (user_one_id = {$user_id} AND (status_user_two = 1 OR status_user_two = 4)) OR (user_two_id = {$user_id} AND (status_user_one = 1 OR status_user_one = 4))";
+        $sql = "SELECT * FROM " . static::$db_table . " WHERE (user_one_id = {$user_id} AND (status_user_two = 2 OR status_user_two = 3)) OR (user_two_id = {$user_id} AND (status_user_one = 2 OR status_user_one = 3))";
         
         return static::find_this_query($sql);
     }
@@ -62,7 +62,23 @@ class Friends extends Dbclass
     {
         global $database;
         
-        $sql = "SELECT * FROM " . static::$db_table . " WHERE (user_one_id = {$user_id} AND (status_user_two = 1 OR status_user_two = 4)) OR (user_two_id = {$user_id} AND (status_user_one = 1 OR status_user_one = 4))";
+        $sql = "SELECT * FROM " . static::$db_table . " WHERE (user_one_id = {$user_id} AND (status_user_two = 2 OR status_user_two = 3)) OR (user_two_id = {$user_id} AND (status_user_one = 2 OR status_user_one = 3))";
+        $result = $database->query($sql);
+        return mysqli_num_rows($result);
+    }
+    
+    public static function friends_request_pagination($user_id, $items_per_page, $offset)
+    {     
+        $sql = "SELECT * FROM " . static::$db_table . " WHERE user_two_id = {$user_id} AND status_user_one = 1 LIMIT {$items_per_page} OFFSET {$offset}";
+        
+        return static::find_this_query($sql);
+    }
+    
+    public static function count_friends_request($user_id)
+    {
+        global $database;
+        
+        $sql = "SELECT * FROM " . static::$db_table . " WHERE user_two_id = {$user_id} AND status_user_one = 1";
         $result = $database->query($sql);
         return mysqli_num_rows($result);
     }
@@ -74,13 +90,20 @@ class Friends extends Dbclass
         $result_obj_array = static::find_this_query($sql);
         $result_obj = array_shift($result_obj_array);
         
+        if(empty($result_obj))
+        {
+            return false;
+        }
+        else
+        {    
         if($result_obj->user_one_id == $user_id)
         {
-            return $result_obj->status_user_two == 4 ? true : false;
+            return $result_obj->status_user_two == 3 ? true : false;
         }
         elseif($result_obj->user_two_id == $user_id)
         {
-            return $result_obj->status_user_one == 4 ? true : false;
+            return $result_obj->status_user_one == 3 ? true : false;
+        }
         }
     }
     

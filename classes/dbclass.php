@@ -70,6 +70,19 @@ class Dbclass
         return (mysqli_affected_rows($database->connection) == 1) ? true : false;            
     }
     
+    public function delete()
+    {
+        global $database;
+        
+        $id = $database->escape_string($this->id);
+        
+        $sql = "DELETE  FROM " . static::$db_table . " WHERE id=$id";
+        
+        $database->query($sql);
+        
+        return (mysqli_affected_rows($database->connection) == 1) ? true : false;
+    }  
+    
     public static function find_this_query($sql)
     {
         global $database;

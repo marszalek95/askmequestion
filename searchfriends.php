@@ -117,7 +117,7 @@
                     <li class="list-group-item list-group-item-dark">
                      <a><?php echo $user->username; ?></a>
                      <span class="float-right">
-                         <a href="newquestion.php?id=<?php echo $user>id; ?>" class="btn btn-sm btn-outline-light">Invite</a>                                  
+                         <a href="action/send_request.php?id=<?php echo $user->id; ?>" class="btn btn-sm btn-outline-light">Invite</a>                                  
                          <a class="" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><i class="fas fa-list fa-lg"></i></a>
                           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="#">All questions</a>
